@@ -1,0 +1,99 @@
+﻿@model Company.ViewModels.DepartmentVM
+<div id="departmentapp">
+    <h1>ADD Department and Employee</h1>
+
+
+    <div class="form-group">
+        <label for="Name">Name of Department</label>
+        <input type="text" class="form-control" v-model="department.name" />
+    </div>
+    <div class="form-group">
+        <label for="Description">Description of Department </label>
+        <textarea class="form-control" v-model="department.description"></textarea>
+    </div>
+
+    <!-- قسم إضافة الموظفين -->
+    <h3> ADD Employees for the Department </h3>
+    <div v-for="(itemEmloyee, index) in department.employees" :key="index">
+        <input type="hidden" v-model="itemEmloyee.id" />
+        <label>Employee Name</label>
+        <input type="text" class="form-control" v-model="itemEmloyee.name" />
+
+        <div class="form-group">
+            <label>Role</label><br />
+            <input type="radio" :name="'role'+index" v-model="itemEmloyee.isManger" value="true" />Manger
+            <input type="radio" :name="'role'+index" v-model="itemEmloyee.isManger" value="false" />Member
+        </div>
+    </div>
+
+    <button type="button" v-on:click="addEmployee()" class=" btn btn-outline-info">ADD  Employee</button>
+
+    <button type="button" v-on:click="save()" class="btn btn-outline-primary"> ADD Department and Employee </button>
+</div>
+
+
+<script type="text/javascript">
+
+    var department_App = new Vue({
+        el: "#departmentapp",
+        components: {
+
+        },
+        data: {
+            department: {
+                id: @Model.Id,
+                name: null,
+                description: null,
+                employees: [],
+            },
+
+
+        },
+        validations: {
+
+        },
+        methods: {
+            addEmployee() {
+                this.department.employees.push({
+                    id: 0,
+                    name: "",
+                    isManger: false,
+                });
+            },
+            load() {
+
+            },
+
+            save() {
+                var formdata = convertObjectToFormData(this.department);
+                console.log(formdata);
+
+                axios.post('/Department/Create', formdata)
+
+                    .then(function (response) {
+
+                        console.log(response);
+                        window.location.href = "/Department/Index";// اعادة توجيه
+
+
+                    })
+
+                    .catch(function (error) {
+
+
+
+                        console.log("Error", error);
+
+                    });
+            },
+
+
+        },
+        computed: {
+        },
+        beforeMount() {
+            this.load();
+        },
+    });
+
+</script>
